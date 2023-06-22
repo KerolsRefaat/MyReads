@@ -1,4 +1,4 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import { useDispatch, useSelector } from "react-redux";
 import Book from "./Book";
 import { RootState } from "../store/store" // Import RootState from your store
@@ -12,18 +12,24 @@ const SearchPage = () => {
   const [userInput, setUserInput] = useState<string>("");
   const dispatch=useDispatch();
   const showSearchPage = useSelector((state: RootState) => state.books.searchedTheBooks);
-  const searchBooksHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value) {
-      BooksAPI.search(event.target.value, 20).then((data: BookData[]) => {
-        dispatch(booksSliceActions.searchTheBooks(data));
-      });
-    } else {
-      dispatch(booksSliceActions.searchTheBooks());
-    }
-    setUserInput(event.target.value);
-  };
+  const searchBooksHandler = (event: React.ChangeEvent<HTMLInputElement>) => {setUserInput(event.target.value);}
 
-  console.log(userInput + " kero");
+
+  useEffect(() => {
+    const timeout =  setTimeout(()=>{
+      if (userInput) {
+        BooksAPI.search(userInput, 20).then((data: BookData[]) => {
+          dispatch(booksSliceActions.searchTheBooks(data));
+        });
+      } else {
+        dispatch(booksSliceActions.searchTheBooks());
+      }
+    },500)
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [dispatch, userInput]);
 
   return (
     <div className="search-books">
