@@ -4,6 +4,8 @@ import { RootState } from "../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { BookData, booksSliceActions } from "../store/slices/booksSlice";
 import * as BooksAPI from "../BooksAPI";
+import "../App.css";
+
 
 const BookList = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -29,7 +31,11 @@ const BookList = () => {
 
   return (
 
-    (isLoading?(<h1>Loading all the required books.</h1>):( <Fragment>
+    (isLoading?(<div className="loader">
+            <h3>Loading all the required books.</h3>
+      <div className="spin-loader">
+      </div>
+      </div>):( <Fragment>
       <BookShelf shelf="Currently Reading" books={currentlyReading} />
       <BookShelf shelf="Want To Read" books={wantToRead} />
       <BookShelf shelf="Read" books={read} />
